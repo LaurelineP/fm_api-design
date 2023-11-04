@@ -184,3 +184,66 @@ With ts and its config we can now change all the file to be ts and we can use th
 https://khalilstemmler.com/blogs/typescript/node-starter-project/
 `pnpm install -D rimraf`
 - set `build` command
+
+# Designing a Schema
+Based on the frontend, we design the schema for our orm and database
+using the template: https://www.framer.com/templates/chronos/
+1. Based on the screens - guess the schema
+- User
+- Projects
+- Tasks
+- Roadmap
+- Features
+2. Go to `prisma/schema.prisma`
+Write models & see the schema syntax.
+When designing a schema, make sure to always wonder the relationship between tables ( one to one , one to many, many to many )
+  - User model
+  ```prisma
+    model Users {
+      id String @id @default(uuid())
+
+      createdAt DateTime @default(now())
+      username String @unique
+      password String
+    }
+  ```
+  - Product model
+  ```prisma
+    model Product {
+      id String @id @default(uuid())
+      createdAt DateTime @default(now())
+      title String @db.VarChar(255)
+      belongs_to_id String
+      // @relation( fields: `[<this.model.field(s)>], references:[<related model's field(s)>]`)
+      // ensure this relationship is done in the other table by running: npx prisma format
+      belongs_to User @relation(fields: [belongs_to_id], references:[id])
+    }
+    ```
+    Q: Difference between `id` and `unique`?
+    - `id` are also unique
+    - we can have more than one unique fields in a model multiple
+    but you can't have multiple `id` --> Primary unique field in the instance
+    DB will try to optimize indexes and take into account Primary keys for
+    performances reasons
+
+  **Products having updates**
+  Creating the Updates model
+  ```prisma
+    // enum status ~ bunch of constants:
+    enum UPDATE_STATUS {
+      IN_PROGRESS
+      SHIPPED
+      DEPRECATED
+    }
+
+
+    model Updates {
+      id String @id @default(uuid())
+      createdAt DateTime @default(now())
+      updated DateTime
+      title String @db.VarChar(255)
+      body String
+      status UPDATE_STATUS @default(IN_PROGRESS)
+    }
+  ```
+  Then continue :) ( rest in the schema.prisma file )
