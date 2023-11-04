@@ -247,3 +247,35 @@ When designing a schema, make sure to always wonder the relationship between tab
     }
   ```
   Then continue :) ( rest in the schema.prisma file )
+
+  # Migrations
+  Migrations are what relational databases's need to do in
+  order to: ( what you teach your database about the shape of the data )
+  - store the schema
+  - when you need to make a breaking change ( your database 
+  is been used in prod and already rely on the previous versions of shapes --> this is where those migrations are also for --> to apply changes for older db versions )
+
+## installing prisma/client (mentioned in our schema provider)
+- installation `pmpm install @prisma/client`
+we are installing it in order for prisma to generate the "SDK" for us based on our schema
+- ensure your `.env` has the `DATABASE_URL` variable and value
+- to run migration: `npx prisma migrate dev --name database-initiation`
+- (extra) reset a database `npx prisma migrate reset`
+```sh
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "api_design_irz6", schema "public" at "dpg-cl36pm9novjs73bcsq80-a.frankfurt-postgres.render.com"
+
+Applying migration `20231104202010_database_initiation`
+
+The following migration(s) have been created and applied from new schema changes:
+
+migrations/
+  └─ 20231104202010_database_initiation/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+
+✔ Generated Prisma Client (v5.5.2) to ./node_modules/.pnpm/@prisma+client@5.5.2_pris
+ma@5.5.2/node_modules/@prisma/client in 59ms
+```
